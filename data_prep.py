@@ -17,6 +17,18 @@ class DataPrep():
             'Agreeableness': 'cAGR',
             'Neuroticism': 'cNEU'
             }
+        self.trait_score_dict = {
+            'O': 'sOPN',
+            'C': 'sCON',
+            'E': 'sEXT',
+            'A': 'sAGR',
+            'N': 'sNEU',
+            'Openness': 'sOPN',
+            'Conscientiousness': 'sCON',
+            'Extraversion': 'sEXT',
+            'Agreeableness': 'sAGR',
+            'Neuroticism': 'sNEU'
+            }
         self.LIWC_features = [
             'WPS', 'Unique', 'Dic', 'Sixltr', 'Negate', 'Assent', 'Article', 'Preps', 'Number',
             'Pronoun', 'I', 'We', 'Self', 'You', 'Other',
@@ -34,7 +46,7 @@ class DataPrep():
             'Swear', 'Nonfl', 'Fillers',
         ]
 
-    def prep_data(self, type, trait):
+    def prep_data(self, type, trait, regression=False):
         df_status = self.prep_status_data()
         df_essay = self.prep_essay_data()
 
@@ -69,7 +81,10 @@ class DataPrep():
 
             # straight up tfidf vector
             # X = tfidf.fit_transform(df_status['STATUS'])
-            y_column = self.trait_dict[trait]
+            if regression:
+                y_column = self.trait_score_dict[trait]
+            else:
+                y_column = self.trait_dict[trait]
             y = df_status[y_column]
 
         return X, y
