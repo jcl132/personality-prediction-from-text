@@ -66,8 +66,6 @@ class DataPrep():
             y = df_essay[y_column]
 
         elif type == 'status':
-
-
             # Include other features with tfidf vector
             other_features_columns = [
                 'NETWORKSIZE',
@@ -80,7 +78,6 @@ class DataPrep():
             ]
             result = tfidf.fit_transform(df_status['STATUS']).todense()
             X = np.nan_to_num(np.column_stack((result, df_status[other_features_columns])))
-
 
             # straight up tfidf vector
             # X = tfidf.fit_transform(df_status['STATUS'])
