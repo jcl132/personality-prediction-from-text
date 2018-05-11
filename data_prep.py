@@ -5,12 +5,17 @@ from sklearn.preprocessing import MinMaxScaler
 
 class DataPrep():
     def __init__(self):
-        self.trait_dict = {
+        self.trait_cat_dict = {
             'O': 'cOPN',
             'C': 'cCON',
             'E': 'cEXT',
             'A': 'cAGR',
             'N': 'cNEU',
+            'OPN': 'cOPN',
+            'CON': 'cCON',
+            'EXT': 'cEXT',
+            'AGR': 'cAGR',
+            'NEU': 'cNEU',
             'Openness': 'cOPN',
             'Conscientiousness': 'cCON',
             'Extraversion': 'cEXT',
@@ -23,6 +28,11 @@ class DataPrep():
             'E': 'sEXT',
             'A': 'sAGR',
             'N': 'sNEU',
+            'OPN': 'sOPN',
+            'CON': 'sCON',
+            'EXT': 'sEXT',
+            'AGR': 'sAGR',
+            'NEU': 'sNEU',
             'Openness': 'sOPN',
             'Conscientiousness': 'sCON',
             'Extraversion': 'sEXT',
@@ -46,7 +56,7 @@ class DataPrep():
             'Swear', 'Nonfl', 'Fillers',
         ]
 
-    def prep_data(self, type, trait, regression=False):
+    def prep_data(self, type, trait, regression=False, model_comparison=False):
         df_status = self.prep_status_data()
         df_essay = self.prep_essay_data()
 
@@ -54,40 +64,48 @@ class DataPrep():
 
         if type == 'essay':
 
-            result = tfidf.fit_transform(df_essay['TEXT']).todense()
+            # result = tfidf.fit_transform(df_essay['TEXT']).todense()
+            #
+            # scaler = MinMaxScaler()
+            # other_features_df = scaler.fit(df_essay[self.LIWC_features])
+            #
+            # X = np.nan_to_num(np.column_stack((result, )))
 
-            scaler = MinMaxScaler()
-            other_features_df = scaler.fit(df_essay[self.LIWC_features])
+            # If need data to compare models
+            if model_comparison:
+                X = tfidf.fit_transform(df_essay['TEXT'])
+            # Data for fitting production model
+            else:
+                X = df_essay['TEXT']
 
-            X = np.nan_to_num(np.column_stack((result, )))
-
-            # X = tfidf.fit_transform(df_essay['TEXT'])
-            y_column = self.trait_dict[trait]
+            y_column = self.trait_cat_dict[trait]
             y = df_essay[y_column]
 
         elif type == 'status':
-
-
             # Include other features with tfidf vector
-            other_features_columns = [
-                'NETWORKSIZE',
-                'BETWEENNESS',
-                'NBETWEENNESS',
-                'DENSITY',
-                'BROKERAGE',
-                'NBROKERAGE',
-                'TRANSITIVITY'
-            ]
-            result = tfidf.fit_transform(df_status['STATUS']).todense()
-            X = np.nan_to_num(np.column_stack((result, df_status[other_features_columns])))
+            # other_features_columns = [
+            #     'NETWORKSIZE',
+            #     'BETWEENNESS',
+            #     'NBETWEENNESS',
+            #     'DENSITY',
+            #     'BROKERAGE',
+            #     'NBROKERAGE',
+            #     'TRANSITIVITY'
+            # ]
+            # result = tfidf.fit_transform(df_status['STATUS']).todense()
+            # X = np.nan_to_num(np.column_stack((result, df_status[other_features_columns])))
 
+            # If need data to compare models
+            if model_comparison:
+                X = tfidf.fit_transform(df_status['STATUS'])
+            # Data to fit production model
+            else:
+                X = df_status['STATUS']
 
-            # straight up tfidf vector
-            # X = tfidf.fit_transform(df_status['STATUS'])
             if regression:
                 y_column = self.trait_score_dict[trait]
             else:
-                y_column = self.trait_dict[trait]
+                y_column = self.trait_cat_dict[trait]
             y = df_status[y_column]
 
         return X, y
