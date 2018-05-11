@@ -10,6 +10,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import f1_score, mean_squared_error
 
+
 class ModelEvaluator():
     def __init__(self, X, y, trait):
         self.X = X
