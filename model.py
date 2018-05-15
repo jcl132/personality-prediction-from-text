@@ -5,7 +5,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 class Model():
     def __init__(self):
-        self.rfr = RandomForestRegressor()
+        self.rfr = RandomForestRegressor(bootstrap=True,
+         max_features='sqrt',
+         min_samples_leaf=1,
+         min_samples_split=2,
+         n_estimators= 200)
         self.rfc = RandomForestClassifier(max_features='sqrt', n_estimators=110)
         self.tfidf = TfidfVectorizer(stop_words='english', strip_accents='ascii')
 
@@ -23,8 +27,9 @@ class Model():
         else:
             return self.rfc.predict(X)
 
-    def predict_proba(self, X):
-        if self.regression:
+    def predict_proba(self, X, regression=False):
+        X = self.tfidf.transform(X)
+        if regression:
             raise ValueError('Cannot predict probabilites of a regression!')
         else:
             return self.rfc.predict_proba(X)
@@ -35,8 +40,8 @@ if __name__ == '__main__':
 
     for trait in traits:
         dp = DataPrep()
-        X_regression, y_regression = dp.prep_data('status', trait, regression=True)
-        X_categorical, y_categorical = dp.prep_data('status', trait, regression=False)
+        X_regression, y_regression = dp.prep_data('status', trait, regression=True, model_comparison=False)
+        X_categorical, y_categorical = dp.prep_data('status', trait, regression=False, model_comparison=False)
         print('Fitting trait ' + trait + ' regression model...')
         model.fit(X_regression, y_regression, regression=True)
         print('Done!')

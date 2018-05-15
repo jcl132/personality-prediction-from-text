@@ -8,9 +8,9 @@ import random
 
 class FBWebScraper():
 
-    def __init__(self, path_to_login_creds, my_profile_url, statuses=100, scroll_time=3, browser='Chrome'):
+    def __init__(self, login_path, my_profile_url, statuses=100, scroll_time=7, browser='Chrome'):
 
-        self.path_to_login_creds = path_to_login_creds
+        self.login_path = login_path
         self.my_profile_url = my_profile_url
         self.set_creds()
 
@@ -22,7 +22,7 @@ class FBWebScraper():
         self.db = self.mc['my-facebook-webscrape']
         self.fb_statuses = self.db['fb-statuses']
 
-        self.browser = self.set_browser(browser)
+        self.set_browser(browser)
 
         person_dict = self.fb_statuses.find_one({'friends_dict': {'$exists': True}})
         if person_dict == None:
@@ -31,22 +31,22 @@ class FBWebScraper():
             self.friends_dict = person_dict['friends_dict']
 
     # Sets the browser to scrape with
-    def set_browser(browser):
+    def set_browser(self, browser):
         # CHROME
-        if browser = 'Chrome':
+        if browser == 'Chrome':
             options = ChromeOptions();
             options.add_argument("--disable-notifications");
             self.browser = Chrome(options=options)
 
         # FIREFOX
-        if browser = 'Firefox':
+        if browser == 'Firefox':
             profile = FirefoxProfile();
             profile.set_preference("dom.webnotifications.enabled", False);
             self.browser = Firefox(firefox_profile=profile)
 
     # Initialize user email and password for login
     def set_creds(self):
-        with open(self.path_to_login_creds, 'r') as stream:
+        with open(self.login_path, 'r') as stream:
             try:
                 y = yaml.load(stream)
                 self.my_password = y['password']
@@ -185,13 +185,19 @@ class FBWebScraper():
                         post_time = post_time_element.get_attribute('title')
                         post_context = post.find_element_by_css_selector('h5')
 
+                        try:
+                            to_element = post_context.find_element_by_css_selector('i')
+                            has_to_element = True
+                        except:
+                            has_to_element = False
+
                         # Conditionals to weed out non authored posts
                         if (post_time not in statuses_dict.keys() and
                             name in post_context.text and
                             'is with' not in post_context.text and
                             'was tagged' not in post_context.text and
                             'is in' not in post_context.text and
-                            ('to ' + name) not in post_context.text:
+                            not has_to_element):
 
                             user_content_element = post.find_element_by_css_selector('div[class*=userContent]')
                             para_elements = user_content_element.find_elements_by_css_selector('p')
@@ -211,14 +217,12 @@ class FBWebScraper():
                 print("Scraping " + name + "'s statuses... \n" + 'Current status count: ' +  str(len(statuses_dict.items())) + ' statuses.')
 
                 time.sleep(self.scroll_time)
-                
+
                 # Calculate new scroll height and compare with last scroll height
                 new_height = self.browser.execute_script("return document.body.scrollHeight")
 
                 # Reached the end of friend's timeline, add name to already_scraped_dict
                 if new_height == last_height:
-                    print('Finished creating ' + name + ' statuses dictionary!')
-                    # already_scraped_dict[name] = url
                     break
                 last_height = new_height
 
@@ -237,9 +241,14 @@ class FBWebScraper():
                 },
             upsert=True
             )
+            print("Finished creating " + name + "'s statuses dictionary! \nStatus count: " + str(len(statuses_dict.items())) + " statuses.")
 
 if __name__ == '__main__':
-    FBWS = FBWebScraper("/Users/jasonli/.secrets/facebook-web-scrape-cred.yaml", "https://www.facebook.com/jason.li.96930", browser='Firefox')
+    FBWS = FBWebScraper(
+        login_path="/Users/jasonli/.secrets/facebook-web-scrape-cred.yaml",
+        my_profile_url="https://www.facebook.com/jason.li.96930",
+        browser='Firefox'
+    )
     FBWS.open_fb()
     if FBWS.friends_dict == {}:
         FBWS.create_friends_dict()

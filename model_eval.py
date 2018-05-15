@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import f1_score, mean_squared_error
-
+from sklearn.model_selection import GridSearchCV
 
 class ModelEvaluator():
     def __init__(self, X, y, trait):
@@ -23,7 +23,13 @@ class ModelEvaluator():
             'GradientBoostingClassifier': GradientBoostingClassifier(),
             'SVC': SVC(),
             'LinearRegression': LinearRegression(),
-            'RandomForestRegressor' : RandomForestRegressor(),
+            'RandomForestRegressor' : RandomForestRegressor(
+                 bootstrap=True,
+                 # max_depth=50,
+                 max_features='sqrt',
+                 min_samples_leaf=1,
+                 min_samples_split=2,
+                 n_estimators= 200),
             'Ridge': Ridge(),
             'SGDRegressor': SGDRegressor(),
         }
@@ -44,6 +50,54 @@ class ModelEvaluator():
     #         CV = GridSearchCV(estimator=model, param_grid=param_grid, cv= 5)
     #         CV.fit(self.X, self.y)
     #         CV.best_params_)
+
+    def tune_hyperparameters(self, model):
+        traits = ['O', 'C', 'E', 'A', 'N']
+        trait_best_params_dict = {}
+        for trait in traits:
+            if model == 'RandomForestRegressor':
+
+                # Number of trees in random forest
+                n_estimators = [int(x) for x in np.linspace(start = 200, stop = 1000, num = 10)]
+                # Number of features to consider at every split
+                max_features = ['auto', 'sqrt']
+                # Maximum number of levels in tree
+                max_depth = [int(x) for x in np.linspace(10, 110, num = 11)]
+                max_depth.append(None)
+                # Minimum number of samples required to split a node
+                min_samples_split = [2, 5, 10]
+                # Minimum number of samples required at each leaf node
+                min_samples_leaf = [1, 2, 4]
+                # Method of selecting samples for training each tree
+                bootstrap = [True, False]
+                # Create the random grid
+                random_grid = {'n_estimators': n_estimators,
+                               'max_features': max_features,
+                               # 'max_depth': max_depth,
+                               # 'min_samples_split': min_samples_split,
+                               # 'min_samples_leaf': min_samples_leaf,
+                               # 'bootstrap': bootstrap
+                               }
+
+
+                # Use the random grid to search for best hyperparameters
+                # First create the base model to tune
+                rf = RandomForestRegressor()
+                # Random search of parameters, using 3 fold cross validation,
+
+                # search across 100 different combinations, and use all available cores
+                # rf_random = RandomizedSearchCV(estimator = rf, param_distributions = random_grid, n_iter = 100, cv = 3, verbose=2, random_state=42, n_jobs = -1)
+
+                rf_GSCV = GridSearchCV(estimator=rf, param_grid=random_grid, cv=5)
+
+                # Fit the random search model
+                rf_GSCV.fit(self.X, self.y)
+                print('Personality ' + trait + ' best params: ' )
+                for k, v in rf_GSCV.best_params_:
+                    print (k + ': ' + v)
+                trait_best_params_dict[trait] = rf_GSCV.best_params_
+
+        return trait_best_params_dict
 
     def compare_scores(self, models, regression=False):
         print('Model performance for trait ' + self.trait + ' prediction:' + '\n')
