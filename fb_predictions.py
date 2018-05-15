@@ -29,19 +29,32 @@ class FBPredictions():
         return output
 
     def load_df(self):
-        names_and_statuses = list(self.fb_statuses.find({'friends_dict': {'$exists': False}}, {'statuses':1, 'name':1, '_id':0}))
+        entries = list(fb_statuses.find({'friends_dict': {'$exists': False}}, {
+            'statuses':1,
+            'name':1,
+            'status_predictions': 1,
+            '_id':0}))
 
-        df_dict = {'NAME': [], 'DATE': [], 'STATUS': []}
-        for entry in names_and_statuses:
+        df_dict = {'NAME': [], 'DATE': [],
+                   'pred_sOPN': [], 'pred_sCON': [], 'pred_sEXT': [], 'pred_sAGR': [], 'pred_sNEU': [],
+                   'pred_prob_cOPN': [], 'pred_prob_cCON': [], 'pred_prob_cEXT': [], 'pred_prob_cAGR': [], 'pred_prob_cNEU': [],
+                   'pred_cOPN': [], 'pred_cCON': [], 'pred_cEXT': [], 'pred_cAGR': [], 'pred_cNEU': [],
+                   'STATUS': []}
 
-            name = entry['name']
+        for entry in entries:
             # name = self.anonymize_name(name)
+            name = entry['name']
             statuses = entry['statuses']
+            predictions = entry['status_predictions']
 
             for date, status in statuses.items():
                 df_dict['NAME'].append(name)
                 df_dict['DATE'].append(date)
                 df_dict['STATUS'].append(status)
+
+                status_predictions = predictions[date]
+                for key, value in status_predictions.items():
+                    df_dict[key].append(value)
 
         df = pd.DataFrame(df_dict)
         df['STATUS_COUNT'] = df.groupby("NAME")["STATUS"].transform('count')
@@ -76,5 +89,5 @@ class FBPredictions():
         for col in trait_scores:
             self.df[col] = df_scaled[col]
 
-if __name__ == '__main__':
-    FBP = FBPredictions()
+# if __name__ == '__main__':
+#     FBP = FBPredictions()

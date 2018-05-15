@@ -3,7 +3,6 @@ from math import sqrt
 from flask import Flask, render_template, request, jsonify
 from collections import Counter
 from flask import Flask, request
-# from build_model import TextClassifier, get_data
 from fb_predictions import FBPredictions
 from predict import Predictor
 from model import Model
@@ -14,6 +13,7 @@ from sklearn.naive_bayes import MultinomialNB
 app = Flask(__name__)
 
 # FBP = FBPredictions()
+M = Model()
 predictor = Predictor()
 
 @app.route('/', methods=['GET'])
@@ -28,6 +28,13 @@ def solve():
     # return prediction
     # return jsonify({'prediction': str(prediction)})
     return jsonify(prediction)
+    #
+    # return render_template('index.txt', predictions=prediction)
+
+@app.route('/my_network', methods=['GET'])
+def my_network():
+    my_network_predictions = predictor.my_network_json()
+    return jsonify(my_network_predictions)
     #
     # return render_template('index.txt', predictions=prediction)
 
