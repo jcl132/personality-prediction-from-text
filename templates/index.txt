@@ -1,0 +1,106 @@
+<!doctype html>
+<title>Hello from Flask</title>
+
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Text Classifier</title>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery.js') }}">  </script>
+    <script type="text/javascript">
+    let get_input_text = function() {
+        let input_text = $("input#input_text").val()
+        return {'input_text': input_text};
+    }
+    let send_text_json = function() {
+        let text = get_input_text();
+        $.ajax({
+            url: '/predict',
+            contentType: "application/json; charset=utf-8",
+            type: 'POST',
+            success: function (results) {
+                display_solutions(results);
+            },
+            data: JSON.stringify(text)
+        });
+    };
+    let display_solutions = function(results) {
+      document.getElementById("solution").innerHTML =
+      "<div>
+        <table>
+          <tr>
+            <th>Trait</th>
+            <th>Probability</th>
+            <th>Category</th>
+            <th>Score</th>
+          </tr>
+          <tr>
+            <td>Openness</td>
+            <td>results.pred_prob_cOPN</td>
+            <td>results.pred_cOPN</td>
+            <td>results.pred_sOPN</td>
+          </tr>
+          <tr>
+            <td>Conscientiousness</td>
+            <td>results.pred_prob_cCON</td>
+            <td>results.pred_cCON</td>
+            <td>results.pred_sCON</td>
+          </tr>
+          <tr>
+            <td>Extraversion</td>
+            <td>results.pred_prob_cEXT</td>
+            <td>results.pred_cEXT</td>
+            <td>results.pred_sEXT</td>
+          </tr>
+          <tr>
+            <td>Agreeableness</td>
+            <td>results.pred_prob_cAGR</td>
+            <td>results.pred_cAGR</td>
+            <td>results.pred_sAGR</td>
+          </tr>
+          <tr>
+            <td>Neuroticism</td>
+            <td>results.pred_prob_cNEU</td>
+            <td>results.pred_cNEU</td>
+            <td>results.pred_sNEU</td>
+          </tr>
+        </table>
+      </div>
+      "
+    };
+    </script>
+
+</head>
+
+<body>
+
+    <h1>Personality Prediction From Text</h1>
+    <p>Please enter the text below!</p>
+
+    <div>
+        <!-- These have id's so that later we can pull out data using js. -->
+        <span>Input your text here:</span> <input id="input_text"></input>
+    </div>
+
+    <div>
+        <button type="button" id="solve" onclick="send_text_json()" >Solve!</button>
+    </div>
+
+    <div>
+        <!-- The span has an id so that later we can fill in the solution
+             using js. -->
+        <p> Your text belongs to:
+          <span id="solution">
+            {% if predictions %}
+              <div>{{ predictions }}</div>
+            {% else %}
+              <h1>Hello, World!</h1>
+            {% endif %}
+          </span>
+        </p>
+
+
+
+
+</body>
