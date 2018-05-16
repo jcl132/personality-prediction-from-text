@@ -16,7 +16,7 @@ class App extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    _.bindAll(this, ['load_my_network']);
+    _.bindAll(this, ["load_my_network"]);
 
     this.state = {
       my_network: [],
@@ -28,10 +28,11 @@ class App extends React.Component {
   }
 
   load_my_network() {
-    fetch('/my_network', {
-      method: 'GET',
+    fetch("/my_network", {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
     }).then(response =>
         response.json().then(data => ({
@@ -39,19 +40,26 @@ class App extends React.Component {
             status: response.status
         })
     ).then(res => {
-      console.log(res.data[0])
       this.setState({
         my_network: res.data,
       });
     }))
   }
 
+
   render() {
+    const container_style = {
+      padding: 30,
+    }
+
+    const title_style = {
+      paddingBottom: 20,
+    }
 
     return(
       <MuiThemeProvider>
-        <div>
-          <h1>Personality Analyzer</h1>
+        <div style={container_style}>
+          <h1 style={title_style}>Personality Analyzer</h1>
           <div>
             <Tabs>
               <Tab label="My Network">

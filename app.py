@@ -10,6 +10,9 @@ import pickle
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
+import json
+from bson import json_util
+
 app = Flask(__name__)
 
 # FBP = FBPredictions()
@@ -34,7 +37,8 @@ def solve():
 @app.route('/my_network', methods=['GET'])
 def my_network():
     my_network_predictions = predictor.my_network_json()
-    return jsonify(my_network_predictions)
+    return json.dumps(my_network_predictions, default=json_util.default)
+    # return jsonify(my_network_predictions)
     #
     # return render_template('index.txt', predictions=prediction)
 

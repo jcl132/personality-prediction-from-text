@@ -39,10 +39,11 @@ export default class TextPredictor extends React.Component {
 		  return;
 		}
 
-    fetch('/predict', {
-      method: 'POST',
+    fetch("/predict", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
+        "Accept": "application/json"
       },
       body: JSON.stringify(this.state.content)
     }).then(response =>
