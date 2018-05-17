@@ -8,7 +8,10 @@ from bs4 import BeautifulSoup
 from open_psychometrics import Big5
 import scipy.stats as stats
 from math import pi
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
+import datetime
 
 class Predictor():
     def __init__(self):
@@ -23,7 +26,7 @@ class Predictor():
         self.df = self.agg_avg_personality()
 
     def load_df(self):
-        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}}, {
+        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}, 'my_personality': {'$exists': False}}, {
             'statuses':1,
             'name':1,
             'status_predictions': 1,
@@ -85,7 +88,7 @@ class Predictor():
         return predictions
 
     def predict_fb_statuses(self):
-        statuses = list(self.fb_statuses.find({'friends_dict': {'$exists': False}}, {'statuses':1, '_id':1, 'name': 1}))
+        statuses = list(self.fb_statuses.find({'friends_dict': {'$exists': False}, 'my_personality': {'$exists': False}}, {'statuses':1, '_id':1, 'name': 1}))
 
         for entry in statuses:
             entry_id = entry['_id']
@@ -159,7 +162,7 @@ class Predictor():
             print('Done!')
 
     def my_network_json(self):
-        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}}, {
+        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}, 'my_personality': {'$exists': False}}, {
             'name': 1,
             'url': 1,
             'datetime': 1,
@@ -173,7 +176,7 @@ class Predictor():
 
     def add_profile_pic(self):
 
-        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}}, {
+        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}, 'my_personality': {'$exists': False}}, {
             'html': 1,
             'url': 1,
             '_id': 0}))
@@ -199,13 +202,14 @@ class Predictor():
     def add_percentiles(self):
         B = Big5()
 
-        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}}, {
+        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}, 'my_personality': {'$exists': False}}, {
             'avg_status_predictions': 1,
             'url': 1,
             'name': 1,
             '_id': 0}))
 
-        scores_labels = ['avg_pred_sOPN', 'avg_pred_sCON', 'avg_pred_sEXT', 'avg_pred_sAGR', 'avg_pred_sNEU']
+        avg_scores_labels = ['avg_pred_sOPN', 'avg_pred_sCON', 'avg_pred_sEXT', 'avg_pred_sAGR', 'avg_pred_sNEU']
+        scores_labels = ['pred_sOPN', 'pred_sCON', 'pred_sEXT', 'pred_sAGR', 'pred_sNEU']
         big5_labels = ['O_score', 'C_score', 'E_score', 'A_score', 'N_score']
         percs_labels = ['pred_perc_sOPN', 'pred_perc_sCON', 'pred_perc_sEXT', 'pred_perc_sAGR', 'pred_perc_sNEU']
 
@@ -217,9 +221,10 @@ class Predictor():
             try:
                 preds = entry['avg_status_predictions']
 
-                for idx, trait_label in enumerate(scores_labels):
+                for idx, trait_label in enumerate(avg_scores_labels):
                     score = preds[trait_label]
-                    perc = stats.percentileofscore(B.df[big5_labels[idx]], score)
+                    # perc = stats.percentileofscore(B.df[big5_labels[idx]], score)
+                    perc = stats.percentileofscore(self.df[scores_labels[idx]], score)
                     perc_dict[percs_labels[idx]] = perc
 
                 self.fb_statuses.update_one(
@@ -277,7 +282,7 @@ class Predictor():
         plt.savefig('static/images/' + name + '.png')
 
     def create_radar_plots(self):
-        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}}, {
+        entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}, 'my_personality': {'$exists': False}}, {
             'url': 1,
             'name': 1,
             'pred_percentiles': 1,
@@ -301,6 +306,37 @@ class Predictor():
                 print('Creating radar plot for ' + name + '...')
             except:
                 print('Error!')
+
+    def submit_personality_test(self, answers):
+        B = Big5()
+        scores = B.handle_personality_test(answers)
+        self.create_plot(list(scores['percentiles'].values()), 'My_Personality')
+        radar_plot_url = 'images/My_Personality.png'
+        self.fb_statuses.update_one(
+                        {'my_personality': {'$exists': True}},
+                        {'$set': {
+                            'my_personality': True,
+                            'datetime': datetime.datetime.now(),
+                            'actual_personality_scores': scores,
+                            'radar_plot_url': radar_plot_url,
+                            }
+                        },
+                    upsert=True
+                    )
+        return {
+                'datetime': datetime.datetime.now(),
+                'actual_personality_scores': scores,
+                'radar_plot_url': radar_plot_url,
+                }
+
+    def my_personality_json(self):
+        entry = self.fb_statuses.find_one({'my_personality': {'$exists': True}}, {
+            'datetime': 1,
+            'actual_personality_scores': 1,
+            'radar_plot_url': 1,
+            '_id': 0})
+        return entry
+
 
 
 if __name__ == '__main__':

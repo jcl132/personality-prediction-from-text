@@ -24,7 +24,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
-def solve():
+def predict():
     text = request.json
     prediction =  predictor.predict([text])
     # prediction = pd.DataFrame(prediction).to_html()
@@ -38,6 +38,24 @@ def solve():
 def my_network():
     my_network_predictions = predictor.my_network_json()
     return json.dumps(my_network_predictions, default=json_util.default)
+    # return jsonify(my_network_predictions)
+    #
+    # return render_template('index.txt', predictions=prediction)
+
+@app.route('/my_personality', methods=['GET'])
+def my_personality():
+    my_personality = predictor.my_personality_json()
+    return json.dumps(my_personality, default=json_util.default)
+    # return jsonify(my_network_predictions)
+    #
+    # return render_template('index.txt', predictions=prediction)
+
+@app.route('/submit_personality_test', methods=['POST'])
+def submit_personality_test():
+    answers = request.json
+    result = predictor.submit_personality_test(answers)
+
+    return jsonify(result)
     # return jsonify(my_network_predictions)
     #
     # return render_template('index.txt', predictions=prediction)

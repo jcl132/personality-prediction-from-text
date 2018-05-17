@@ -153,16 +153,18 @@ export default class TextPredictor extends React.Component {
       var predictions_table = null
     }
 
-    return(<div>
+    return(<div style={{margin: 30}}>
       <h2>Text Predictor</h2>
       <p>
         Predict the personality of the author of a given piece of text.
       </p>
-      <TextField hintText="Input Text"
-                multiLine={true}
-                floatingLabelText="Input Text"
-                onChange={this.handleChange}
+      <div>
+        <TextField hintText="Input Text"
+                  multiLine={true}
+                  floatingLabelText="Input Text"
+                  onChange={this.handleChange}
                 value={this.state.content}/>
+      </div>
       <RaisedButton label="Predict" type="button" primary={true} onClick={this.handleSubmit}/>
       <div>
         {predictions_table}
