@@ -1,14 +1,18 @@
 import React, { PropTypes } from 'react'
 import ReactDOM from "react-dom";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {Tabs, Tab} from 'material-ui/Tabs';
 import has from 'lodash';
 import 'whatwg-fetch'
 
 import { hot } from 'react-hot-loader'
 
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import AppBar from 'material-ui/AppBar';
+
 import TextPredictor from './text_predictor'
 import MyNetwork from './my_network'
+import MyPersonality from './my_personality'
 
 class App extends React.Component {
   // static propTypes = {
@@ -49,23 +53,29 @@ class App extends React.Component {
 
   render() {
     const container_style = {
-      padding: 30,
+      // padding: 30,
     }
 
     const title_style = {
-      paddingBottom: 20,
+      margin: 15
+    }
+
+    const tab_container_style = {
+      margin: 20
     }
 
     return(
       <MuiThemeProvider>
         <div style={container_style}>
-          <h1 style={title_style}>Personality Analyzer</h1>
+          <AppBar
+            title="Personality Analyzer"/>
           <div>
-            <Tabs>
+            <Tabs secondary={true}>
+              <Tab label="My Personality">
+                <MyPersonality />
+              </Tab>
               <Tab label="My Network">
                 <MyNetwork my_network={this.state.my_network}/>
-              </Tab>
-              <Tab label="My Personality">
               </Tab>
               <Tab label="Text Predictor" >
                 <TextPredictor />

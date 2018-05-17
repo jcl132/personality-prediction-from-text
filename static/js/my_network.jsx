@@ -31,14 +31,14 @@ export default class MyNetwork extends React.Component {
           console.log('UNDEFINED PERSON')
         }
         else {
-            my_network_rows.push(<PersonCard key={person.name} person={person} />)
+            my_network_rows.push(<PersonCard key={person.name} person={person} my_personality={false} />)
         }
       }
     )
-    // my_network_rows = my_network_rows.slice(0, 20)
+    my_network_rows = my_network_rows.slice(0, 100)
 
     return(
-      <div>
+      <div style={{marginLeft: 30, marginRight: 30}}>
         {my_network_rows}
       </div>
     )
