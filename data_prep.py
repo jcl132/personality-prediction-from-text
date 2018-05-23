@@ -92,12 +92,12 @@ class DataPrep():
                 'NBROKERAGE',
                 'TRANSITIVITY'
             ]
-            result = tfidf.fit_transform(df_status['STATUS']).todense()
+            # result = tfidf.fit_transform(df_status['STATUS']).todense()
 
             # If need data to compare models
             if model_comparison:
-                # X = tfidf.fit_transform(df_status['STATUS'])
-                X = np.nan_to_num(np.column_stack((result, df_status[other_features_columns])))
+                X = tfidf.fit_transform(df_status['STATUS'])
+                # X = np.nan_to_num(np.column_stack((result, df_status[other_features_columns])))
             # Data to fit production model
             else:
                 X = df_status['STATUS']

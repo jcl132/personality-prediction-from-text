@@ -60,7 +60,7 @@ class Predictor():
     def load_models(self):
         M = Model()
         for trait in self.traits:
-            with open(trait + '_model.pkl', 'rb') as f:
+            with open('static/' + trait + '_model.pkl', 'rb') as f:
                 self.models[trait] = pickle.load(f)
 
     def predict(self, X, traits='All', predictions='All'):
@@ -171,6 +171,7 @@ class Predictor():
             'profile_pic_url': 1,
             'pred_percentiles': 1,
             'radar_plot_url': 1,
+            'compare_radar_plot_url': 1,
             '_id': 0}))
         return entries
 
@@ -239,7 +240,8 @@ class Predictor():
                 print('Error')
 
     # Radar plot for personality
-    def create_plot(self, values, name):
+    def create_plot(self, values, name, compare=False):
+        
         plt.cla()
         plt.clf()
         traits = [
@@ -263,7 +265,18 @@ class Predictor():
         angles += angles[:1]
 
         # Initialise the spider plot
-        ax = plt.subplot(111, polar=True)
+        if compare:
+            my_personality_data = self.fb_statuses.find_one({'my_personality': {'$exists': True}}, {
+                'datetime': 1,
+                'actual_personality_scores': 1,
+                'radar_plot_url': 1,
+                '_id': 0})
+
+            ax = self.create_plot(list(my_personality_data['actual_personality_scores']['percentiles'].values()), 'My_Personality')
+            filename = 'static/images/' + name + '_Compare.png'
+        else:
+            ax = plt.subplot(111, polar=True)
+            filename = 'static/images/' + name + '.png'
 
         # Draw one axe per variable + add labels labels yet
         plt.xticks(angles[:-1], traits, color='grey', size=11)
@@ -279,7 +292,11 @@ class Predictor():
         # Fill area
         ax.fill(angles, values, 'b', alpha=0.1)
 
-        plt.savefig('static/images/' + name + '.png')
+        plt.savefig(filename)
+
+        return ax
+
+        
 
     def create_radar_plots(self):
         entries = list(self.fb_statuses.find({'friends_dict': {'$exists': False}, 'my_personality': {'$exists': False}}, {
@@ -337,13 +354,28 @@ class Predictor():
             '_id': 0})
         return entry
 
+    def compare_json(self, person):
+        pred_dict = person['pred_percentiles']
+        name = person['name']
+        self.create_plot(list(pred_dict.values()), name, compare=True)
+        compare_radar_plot_url = 'images/' + name + '_Compare.png'
+        self.fb_statuses.update_one(
+                        {'name': name},
+                        {'$set': {
+                            'compare_radar_plot_url': compare_radar_plot_url,
+                            }
+                        },
+                    upsert=True
+                    )
+        return self.my_network_json()
+
 
 
 if __name__ == '__main__':
     P = Predictor()
-    # P.add_profile_pic()
-    # P.predict_fb_statuses()
-    # P.agg_avg_personality()
-    # P.insert_avgs_into_db()
-    # P.add_percentiles()
+    P.add_profile_pic()
+    P.predict_fb_statuses()
+    P.agg_avg_personality()
+    P.insert_avgs_into_db()
+    P.add_percentiles()
     P.create_radar_plots()

@@ -1,36 +1,109 @@
-Personality Prediction from Text
+# Personality Prediction from Text
+
+This project aims to predict personality traits from a sample of text using various Machine Learning models. A Facebook webscraper is included to scrape statuses of your Facebook friends to create a personality prediction for each of them. A Web App, Personality Analyzer, was created to interface with the predictions to compare your personality to your friends directly.
+
+![Alt Text](static/My Network.gif)
+
+---
+
+# Requirements 
+
+Python, MongoDB, Node.js
+
+---
+
+# Installation and Usage
+
+## Webscrape Facebook
+
+The webscraper is located in fb_webscraper.py.
+The scraper requires your login credentials and profile url to be in the yaml file fb_login_creds.yaml.
+
+Run the webscraper: 
+
+python fb_webscraper.py
+
+This will open a Selenium automated browser that will login to your Facebook account and create a list of your friends and their profile urls, and then visit each friend's timeline and scrape 50 statuses and add them to a MongoDB.
+
+## Train the Models
+
+The models file is located in model.py
+
+Run and train the models:
+
+python model.py
+
+This trains the models on the myPersonalty status data and creates five pickle files corresponding to each personality trait in the static folder.
+
+## Make Predictions
+
+The prediction file is located in predict.py
+
+Run the prediction file:
+
+python predict.py
+
+This will create personality predictions for the current Facebook statuses in your database.
+
+## Web App
+
+Install the web app:
+
+npm install
+
+This installs the required node modules to run the web app.
 
 
-Business
+Run the web app:
 
-This project would train a machine learning model to predict a person’s personality based on a sample of their writing or from something they’ve authored (Facebook status). The personality model I want to use is the Five Factor Model, or Big Five, since it’s currently the most studied personality model in the scientific literature. The Big Five consists of five personality factors statistically derived from an analysis of vocabulary people use to describe their own and others personalities. The five traits are Openness (O), Conscientiousness (C), Extraversion (E), Agreeableness (A), and Neuroticism (N), easily remembered with the acronym OCEAN.
-Personality has been found to be correlated to various different phenomena, such as academic and workplace performance (C), susceptibility to various mental disorders (N), creativity (O), how people experience positive emotion (E) and how people interact with one another (A). Knowing or estimating a customer or user’s personality can give valuable insights related to potential effective advertisements, interest in certain products and probability of a sale. Businesses can leverage personality to make better decisions about how to better serve their customers.
+python app.py
 
+This runs the web app on the local environment.
+Visit localhost:5000 to view the web app.
 
-Data Understanding
+---
 
-There a few different data sources I would use to gather the relevant personality and text data. The first source is from a paper in the field of personality prediction from text ‘Deep Learning-Based Document Modeling for Personality Detection from Text’ by Cambria et al. (http://sentic.net/deep-learning-based-personality-detection.pdf)  which has the essay and personality data from Pennebaker and King and also their corresponding Mairese features and Linguistic Inquiry and Word Count features (LIWC), both features for extracting psychological traits from text. This dataset is publicly available and already has been downloaded.
-A second source is from the myPersonality project dataset (http://mypersonality.org/wiki/doku.php?id=wcpr13) which has a list of Facebook statuses and other Facebook features such as network size, betweenness and density as well as corresponding personality scores.
-The previous two data sources would be used to train a machine learning model to generate estimated personality scores based on text. I would then web scrape my own Facebook account for Facebook statuses and comments from my own network, and try to estimate people’s personalities. The generated personality score database from my own network can be used to generate interesting relationship metrics about people in my life (most similar/least similar, party/group compatibility, individual differences, person to person compatibility).
+# About
+## Introduction
 
+### Personality
 
-Data Preparation
+Personality is an important aspect of human life and is important for understanding yourself and other people. The preeminent personality model in personality psychology is the Big 5 model. The Big 5 model was derived through factor analysis of questions based on common descriptive adjectives. This analysis produced five distinct traits of personality:
 
-The previous data sources would firstly need to be standardized to a standard scale since personality testing scores can use ranges of 1-7 or 1-5 for questions and also vary depending on type of personality trait (Emotional Stability is the opposite of Neuroticism). Some datasets also only show classification scores and not continuous scores, which need to be standardized. Depending on the ensemble of models being used, I might also need to extract the LIWC and Mairesse features from the Facebook statuses, since only the essay dataset has those features labelled.
+https://en.wikipedia.org/wiki/Big_Five_personality_traits
 
+#### Traits (O. C. E. A. N.)
+##### (O) Openness to experience:
+(inventive/curious vs. consistent/cautious)
 
-Modeling
+Appreciation for art, emotion, adventure, unusual ideas, curiosity, and variety of experience. Openness reflects the degree of intellectual curiosity, creativity and a preference for novelty and variety a person has. It is also described as the extent to which a person is imaginative or independent and depicts a personal preference for a variety of activities over a strict routine. High openness can be perceived as unpredictability or lack of focus, and more likely to engage in risky behaviour or drug taking. Also, individuals that have high openness tend to lean towards being artists or writers in regards to being creative and appreciate of the significance of the intellectual and artistic pursuits. Moreover, individuals with high openness are said to pursue self-actualization specifically by seeking out intense, euphoric experiences. Conversely, those with low openness seek to gain fulfillment through perseverance and are characterized as pragmatic and data-driven—sometimes even perceived to be dogmatic and closed-minded. Some disagreement remains about how to interpret and contextualize the openness factor.
 
-This project could use multiple models, namely Logistic Regression, Gradient Boosted Classifier, Neural Networks, Naive Bayes or Random Forest. Since there are five different personality factors, I could train five separate models that predict each trait based on text.
-Since I have two different datasets to train my models, I would perhaps have to tune different models for different use cases. A longer form stream of consciousness essay might be better or worse for training a model to predict personality. Depending upon model performance, different techniques and ensemble methods need to be used to find the best possible algorithm given the various models and data.
-Depending on results, both continuous and discrete prediction is possible. Categorical (binary classification for each personality trait) or continuous score prediction. From the current literature, it seems ranking algorithms tend to work best, since personality percentiles are calculated relative to other scores in the population. I could use a ranking algorithm, however more learning is required to implement since I am not familiar with any from the current course curriculum.
+#### (C) Conscientiousness:
+(efficient/organized vs. easy-going/careless)
 
+A tendency to be organized and dependable, show self-discipline, act dutifully, aim for achievement, and prefer planned rather than spontaneous behavior. High conscientiousness is often perceived as stubbornness and obsession. Low conscientiousness is associated with flexibility and spontaneity, but can also appear as sloppiness and lack of reliability.
 
-Evaluation
+#### (E) Extraversion:
+(outgoing/energetic vs. solitary/reserved)
 
-To evaluate the model, I will compare the models performance on Facebook status and personality dataset which would be split into a training and test set many times using K fold cross validation. A log loss score could be used to compare multiple models and evaluate the most predictive and interpretable. I could also compare my loss function scores to any of the current models and methods in the current literature. There are various models and methods being used in the current literature such as SVM, Naive Bayes, and CNNs. Depending on the method, I will compare my model and use the literature model scores as a baseline.
+Energy, positive emotions, surgency, assertiveness, sociability and the tendency to seek stimulation in the company of others, and talkativeness. High extraversion is often perceived as attention-seeking and domineering. Low extraversion causes a reserved, reflective personality, which can be perceived as aloof or self-absorbed. Extroverted people tend to be more dominant in social settings, opposed to introverted people who may act more shy and reserved in this setting.
 
+#### (A) Agreeableness:
+(friendly/compassionate vs. challenging/detached)
 
-Deployment
+A tendency to be compassionate and cooperative rather than suspicious and antagonistic towards others. It is also a measure of one's trusting and helpful nature, and whether a person is generally well-tempered or not. High agreeableness is often seen as naive or submissive. Low agreeableness personalities are often competitive or challenging people, which can be seen as argumentative or untrustworthy.
 
-I would make a presentation and push it onto github. However, I also have a public website that I could publish my results on. A creative way to implement this project is as an actual personality test, with an input form containing a proper Big Five question set to create a score for each user. This score can be used to compare to other people in the database to calculate the same relationship metrics from above. There may also be an input field to write or paste in a piece of text to try and predict a personality profile based on that text, and to calculate error by comparing the predicted score to the actual score.
+#### (N) Neuroticism:
+(sensitive/nervous vs. secure/confident)
+
+Neuroticism identifies certain people who are more prone to psychological stress. The tendency to experience unpleasant emotions easily, such as anger, anxiety, depression, and vulnerability. Neuroticism also refers to the degree of emotional stability and impulse control and is sometimes referred to by its low pole, "emotional stability". A high stability manifests itself as a stable and calm personality, but can be seen as uninspiring and unconcerned. A low stability expresses as a reactive and excitable personality, often very dynamic individuals, but they can be perceived as unstable or insecure. It has also been researched that individuals with higher levels of tested neuroticism tend to have worse psychological well being.
+
+## Methods
+
+### Machine Learning
+
+The models used are a Random Forest Regressor and a Random Forest Classifier. The models are trained on a dataset from the myPersonality project (https://sites.google.com/michalkosinski.com/mypersonality). Models produce a predicted personality score, using the regression model, and a probability of the binary class, using the classification model, for each personality trait.
+
+### Web App
+
+The Web App was created using React.js using the Material-UI frontend library and Webpack for bundling. The backend is using Flask and MongoDB.

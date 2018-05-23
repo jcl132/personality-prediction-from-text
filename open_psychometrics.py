@@ -110,35 +110,6 @@ class Big5():
 	    for row in df.values:
 	        score.append(row.mean())
 	    return score
-	    
-	# def calc_percentile(self, score, trait):
-	# 	if trait == 'O':
-	# 		pop_scores = self.df['O_score']
-	# 	if trait == 'C':
-	# 		pop_scores = self.df['C_score']
-	# 	if trait == 'E':
-	# 		pop_scores = self.df['E_score']
-	# 	if trait == 'A':
-	# 		pop_scores = self.df['A_score']
-	# 	if trait == 'N':
-	# 		pop_scores = self.df['N_score']
-
-	# 	possible_percentiles = list(range(101))
-		
-	# 	score_percentiles = []
-	    
-	# 	for perc in possible_percentiles:
-	# 		score_percentiles.append(np.percentile(pop_scores, perc))
-	        
-	# 	calc_perc = 0
-	# 	for score_perc, perc in zip(score_percentiles, possible_percentiles):
-	# 		if int(score_perc) >= score:
-	# 			calc_perc = perc
-	# 			break
-	# 		elif int(score_perc) > score:
-	# 			break
-
-	# 	return calc_perc
 
 	def prep_df(self):
 		O_columns = ['O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'O8', 'O9', 'O10']
@@ -153,9 +124,4 @@ class Big5():
 		self.df['A_score'] = self.calc_score(self.df[A_columns])
 		self.df['N_score'] = self.calc_score(self.df[N_columns])
 
-		# self.df['O_percentile'] = self.df['O_score'].apply(lambda x: stats.percentileofscore(self.df['O_score'].sort_values(),x))
-		# self.df['C_percentile'] = self.df['C_score'].apply(lambda x: stats.percentileofscore(self.df['C_score'].sort_values(),x))
-		# self.df['E_percentile'] = self.df['E_score'].apply(lambda x: stats.percentileofscore(self.df['E_score'].sort_values(),x))
-		# self.df['A_percentile'] = self.df['A_score'].apply(lambda x: stats.percentileofscore(self.df['A_score'].sort_values(),x))
-		# self.df['N_percentile'] = self.df['N_score'].apply(lambda x: stats.percentileofscore(self.df['N_score'].sort_values(),x))
-
+		

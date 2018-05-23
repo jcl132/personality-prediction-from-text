@@ -20,18 +20,62 @@ class App extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    _.bindAll(this, ["load_my_network"]);
+    _.bindAll(this, ["loadMyNetwork", 'requestCompare', 'loadMyPersonality']);
 
     this.state = {
       my_network: [],
+      my_personality_data: null,
+      compare_data: null,
     };
   }
 
   componentDidMount() {
-    this.load_my_network()
+    this.loadMyNetwork()
+    this.loadMyPersonality()
   }
 
-  load_my_network() {
+  requestCompare(person) {
+    fetch("/compare", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate'
+      },
+      body: JSON.stringify(person),
+    }).then(response =>
+        response.json().then(data => ({
+            data: data,
+            status: response.status
+        })
+    ).then(res => {
+      this.setState({
+        my_network: res.data,
+      });
+    }))
+  }
+
+  loadMyPersonality() {
+    fetch("/my_personality", {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate'
+      },
+    }).then(response =>
+        response.json().then(data => ({
+            data: data,
+            status: response.status
+        })
+    ).then(res => {
+      this.setState({
+        my_personality_data: res.data,
+      });
+    }))
+  }
+
+  loadMyNetwork() {
     fetch("/my_network", {
       method: "GET",
       headers: {
@@ -70,12 +114,16 @@ class App extends React.Component {
           <AppBar
             title="Personality Analyzer"/>
           <div>
-            <Tabs secondary={true}>
-              <Tab label="My Personality">
-                <MyPersonality />
-              </Tab>
+            <Tabs>
               <Tab label="My Network">
-                <MyNetwork my_network={this.state.my_network}/>
+                <MyNetwork 
+                  my_network={this.state.my_network} 
+                  my_personality_data={this.state.my_personality_data} 
+                  requestCompare={this.requestCompare}
+                  compare_data={this.state.compare_data}/>
+              </Tab>
+              <Tab label="My Personality">
+                <MyPersonality my_personality_data={this.state.my_personality_data}/>
               </Tab>
               <Tab label="Text Predictor" >
                 <TextPredictor />

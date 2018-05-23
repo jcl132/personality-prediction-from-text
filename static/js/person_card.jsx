@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import ReactDOM from "react-dom";
 import Paper from 'material-ui/Paper';
 import Avatar from 'material-ui/Avatar';
+import RaisedButton from 'material-ui/RaisedButton';
 import {
   Table,
   TableBody,
@@ -12,10 +13,35 @@ import {
 } from 'material-ui/Table';
 import {Tabs, Tab} from 'material-ui/Tabs';
 
+import Compare from './compare'
+
 export default class PersonCard extends React.Component {
 	constructor(props, context) {
 	    super(props, context);
-	    _.bindAll(this, ["round_probs", "round_scores", "round_percs"]);
+	    _.bindAll(this, ["round_probs", "round_scores", "round_percs", 'handleCompare', 'annonymizeNames']);
+
+	    this.state = {
+	    	compare: false,
+	    }
+	}
+
+	annonymizeNames(string) {
+	    var names = string.split(' '),
+	        initials = names[0].substring(0, 1).toUpperCase().concat('.');
+	    
+	    if (names.length > 1) {
+	        initials += names[names.length - 1].substring(0, 1).toUpperCase().concat('.');
+	    }
+	    return initials;
+	    console.log(getInitials('FirstName LastName'));
+	};
+
+	handleCompare() {
+		if (!this.state.compare) {
+			this.props.requestCompare(this.props.person)
+		}
+		this.setState({compare : !this.state.compare})
+
 	}
 
 	round_probs(number) {
@@ -32,7 +58,7 @@ export default class PersonCard extends React.Component {
 
   	render() {
   		
-	    const { person, my_personality } = this.props;
+	    const { person, my_personality, my_personality_data, compare_data } = this.props;
 
 	    const row_style = {
 	    	fontSize: 15,
@@ -85,6 +111,14 @@ export default class PersonCard extends React.Component {
 	    const agr_row = <TableRowColumn style={row_style}>(<span style={{fontWeight: 'bold'}}>A</span>) Agreeableness</TableRowColumn>
 	    const neu_row = <TableRowColumn style={row_style}>(<span style={{fontWeight: 'bold'}}>N</span>) Neuroticism</TableRowColumn>
 
+	    if (this.state.compare) {
+	    	var compare_element = <RaisedButton style={{margin: 10}} onClick={this.handleCompare} label="Cancel" />
+	    	var compare_card = <Compare personA={my_personality_data} personB={person} compare_data={compare_data} />
+	    }
+	    else {
+		    var compare_element = <RaisedButton style={{margin: 10}} onClick={this.handleCompare} primary={true} label="Compare" />
+			var compare_card = null
+		}
 
 	    if (my_personality) {
 
@@ -348,8 +382,9 @@ export default class PersonCard extends React.Component {
 				    				<Avatar style={avatar_style} size={150} src={person.profile_pic_url}/>
 				    			</a>
 				    			<a href={person.url} target="_blank">
-				    				<span style={name_style}>{person.name}</span>
+				    				<span style={name_style}>{this.annonymizeNames(person.name)}</span>
 				    			</a>
+				    			{compare_element}
 				    		</div>
 				    		<div style={plot_style}>
 				    			<img src={'/static/'+person.radar_plot_url} style={plot_img_style}>
@@ -383,6 +418,8 @@ export default class PersonCard extends React.Component {
 			    		</div>
 	    }
 
+	    
+
 	    return (
 	    	<div style={item_style}>
 	    		<Paper zDepth={2}>
@@ -390,6 +427,7 @@ export default class PersonCard extends React.Component {
 		    			{card_elements}
 		    		</div>
 	    		</Paper>
+	    		{compare_card}
 	    	</div>
 	    	)
 	}

@@ -10,44 +10,26 @@ import PersonCard from './person_card'
 export default class MyPersonality extends React.Component {
 	constructor(props, context) {
 		super(props, context);
-		_.bindAll(this, ["load_my_personality", 'updatePersonalityFromTest', 'takeTest']);
+		_.bindAll(this, ['updatePersonalityFromTest', 'takeTest']);
 
 		this.state = {
-			my_personality: null,
 			take_test: false
 		}
 	}
 
-	load_my_personality() {
-		fetch("/my_personality", {
-		  method: "GET",
-		  headers: {
-		    'Content-Type': 'application/json',
-		    'Accept': 'application/json',
-		    'Cache-Control': 'no-store, no-cache, must-revalidate'
-		  },
-		}).then(response =>
-		    response.json().then(data => ({
-		        data: data,
-		        status: response.status
-		    })
-		).then(res => {
-		  this.setState({
-		    my_personality: res.data,
-		  });
-		}))
-		
-	}
+	// loadMyPersonality() {
+	// 	this.props.loadMyPersonality()
+	// }
 
 	componentDidMount() {
-	    this.load_my_personality()
+	    // this.loadMyPersonality()
 	}
 
 	updatePersonalityFromTest(data) {
-		this.setState({
-			my_personality: data,
-			take_test: false
-		})
+		// this.setState({
+		// 	my_personality: data,
+		// 	take_test: false
+		// })
 	}
 
 	takeTest() {
@@ -55,12 +37,14 @@ export default class MyPersonality extends React.Component {
 	}
 
 	render() {
+
+		const { my_personality_data } = this.props;
 		
-		if (this.state.my_personality == null) {
+		if (my_personality_data == null) {
 			var my_personality_card = null
 		}
 		else {
-			var my_personality_card = <PersonCard person={this.state.my_personality} my_personality={true}/>
+			var my_personality_card = <PersonCard person={my_personality_data} my_personality={true}/>
 		}
 
 		if(this.state.take_test) {

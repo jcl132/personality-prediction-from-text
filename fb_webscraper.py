@@ -8,11 +8,11 @@ import random
 
 class FBWebScraper():
 
-    def __init__(self, login_path, my_profile_url, statuses=100, scroll_time=7, browser='Chrome'):
+    def __init__(self, my_email, my_password, my_profile_url, statuses=50, scroll_time=7, browser='Chrome'):
 
-        self.login_path = login_path
+        self.my_email = my_email
+        self.my_password = my_password
         self.my_profile_url = my_profile_url
-        self.set_creds()
 
         self.number_of_statuses = statuses
         self.scroll_time = scroll_time
@@ -43,16 +43,6 @@ class FBWebScraper():
             profile = FirefoxProfile();
             profile.set_preference("dom.webnotifications.enabled", False);
             self.browser = Firefox(firefox_profile=profile)
-
-    # Initialize user email and password for login
-    def set_creds(self):
-        with open(self.login_path, 'r') as stream:
-            try:
-                y = yaml.load(stream)
-                self.my_password = y['password']
-                self.my_email = y['email']
-            except yaml.YAMLError as exc:
-                print(exc)
 
     # Opens facebook in the browser
     def open_fb(self):
@@ -244,11 +234,22 @@ class FBWebScraper():
             print("Finished creating " + name + "'s statuses dictionary! \nStatus count: " + str(len(statuses_dict.items())) + " statuses.")
 
 if __name__ == '__main__':
+    with open('fb_login_creds.yaml', 'r') as stream:
+        try:
+            y = yaml.load(stream)
+            my_password = y['password']
+            my_email = y['email']
+            my_profile_url = y['profile_url']
+        except yaml.YAMLError as exc:
+            print(exc)
+
     FBWS = FBWebScraper(
-        login_path="/Users/jasonli/.secrets/facebook-web-scrape-cred.yaml",
-        my_profile_url="https://www.facebook.com/jason.li.96930",
-        browser='Firefox'
+        my_email=my_email,
+        my_password=my_password,
+        my_profile_url=my_profile_url,
+        browser='Chrome'
     )
+
     FBWS.open_fb()
     if FBWS.friends_dict == {}:
         FBWS.create_friends_dict()
