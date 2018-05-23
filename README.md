@@ -14,6 +14,8 @@ Python, MongoDB, Node.js
 
 # Installation and Usage
 
+## ALERT: Currently debugging installation and usage on different environments, thank you for your patience
+
 ## Webscrape Facebook
 
 The webscraper is located in fb_webscraper.py.
@@ -53,6 +55,11 @@ npm install
 
 This installs the required node modules to run the web app.
 
+Bundle javascript:
+
+npm run build
+
+Creates the javascript bundle bundle.js
 
 Run the web app:
 

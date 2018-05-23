@@ -3,7 +3,6 @@ from math import sqrt
 from flask import Flask, render_template, request, jsonify
 from collections import Counter
 from flask import Flask, request
-from fb_predictions import FBPredictions
 from predict import Predictor
 from model import Model
 import pickle
@@ -15,7 +14,6 @@ from bson import json_util
 
 app = Flask(__name__)
 
-# FBP = FBPredictions()
 M = Model()
 predictor = Predictor()
 
