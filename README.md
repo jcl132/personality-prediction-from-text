@@ -25,6 +25,16 @@ python fb_webscraper.py
 
 This will open a Selenium automated browser that will login to your Facebook account and create a list of your friends and their profile urls, and then visit each friend's timeline and scrape 50 statuses and add them to a MongoDB.
 
+## Train the Models
+
+The models file is located in model.py
+
+Run and train the models:
+
+python model.py
+
+This trains the models on the myPersonalty status data and creates five pickle files corresponding to each personality trait in the static folder.
+
 ## Make Predictions
 
 The prediction file is located in predict.py
