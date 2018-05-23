@@ -20,10 +20,15 @@ import PersonCard from './person_card'
 export default class MyNetwork extends React.Component {
   constructor(props, context) {
     super(props, context);
+    _.bindAll(this, ["requestCompare"]);
+  }
+
+  requestCompare(person) {
+    this.props.requestCompare(person)
   }
 
   render() {
-    const { my_network } = this.props;
+    const { my_network, my_personality_data, compare_data } = this.props;
 
     var my_network_rows = []
     my_network.map((person) => {
@@ -31,11 +36,17 @@ export default class MyNetwork extends React.Component {
           console.log('UNDEFINED PERSON')
         }
         else {
-            my_network_rows.push(<PersonCard key={person.name} person={person} my_personality={false} />)
+            my_network_rows.push(<PersonCard 
+                key={person.name} 
+                person={person} 
+                my_personality={false} 
+                my_personality_data={my_personality_data}
+                requestCompare={this.requestCompare}
+                compare_data={compare_data}/>)
         }
       }
     )
-    my_network_rows = my_network_rows.slice(0, 100)
+    // my_network_rows = my_network_rows.slice(0, 50)
 
     return(
       <div style={{marginLeft: 30, marginRight: 30}}>

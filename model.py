@@ -48,6 +48,6 @@ if __name__ == '__main__':
         print('Fitting trait ' + trait + ' categorical model...')
         model.fit(X_categorical, y_categorical, regression=False)
         print('Done!')
-        with open(trait + '_model.pkl', 'wb') as f:
+        with open('static/' + trait + '_model.pkl', 'wb') as f:
             # Write the model to a file.
             pickle.dump(model, f)

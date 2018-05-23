@@ -60,5 +60,15 @@ def submit_personality_test():
     #
     # return render_template('index.txt', predictions=prediction)
 
+@app.route('/compare', methods=['POST'])
+def compare():
+    person = request.json
+    result = predictor.compare_json(person)
+
+    return json.dumps(result, default=json_util.default)
+    # return jsonify(my_network_predictions)
+    #
+    # return render_template('index.txt', predictions=prediction)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', threaded=True, debug=True)

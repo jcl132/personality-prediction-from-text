@@ -164,7 +164,7 @@ export default class PersonalityTest extends React.Component {
 					1 = Strongly Disagree, 2 = Disagree, 3 = Neutral 4 = Agree, and 5 = Strongly Agree. 
 				</p>
 				{question_elements}
-				<RaisedButton label="Submit" primary={true} style={{marginTop: 20}} onClick={this.handleSubmit}/>
+				<RaisedButton label="Submit" primary={true} style={{marginTop: 20, marginBottom: 30}} onClick={this.handleSubmit}/>
 			</div>
 			)
 	}

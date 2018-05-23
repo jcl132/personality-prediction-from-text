@@ -39,18 +39,6 @@ class ModelEvaluator():
 
         }
 
-    # def tune_hyperparameters(self):
-    #     for model_name, model in self.models_dict.items():
-    #
-    #         param_grid = {
-    #             'n_estimators': [50, 100, 150, 200],
-    #             'max_features': ['auto', 'sqrt', 'log2']
-    #         }
-    #
-    #         CV = GridSearchCV(estimator=model, param_grid=param_grid, cv= 5)
-    #         CV.fit(self.X, self.y)
-    #         CV.best_params_)
-
     def tune_hyperparameters(self, model):
         traits = ['O', 'C', 'E', 'A', 'N']
         trait_best_params_dict = {}
