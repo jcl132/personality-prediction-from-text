@@ -1,6 +1,6 @@
 # Personality Prediction from Text
 
-This project aims to predict personality traits from a sample of text using various Machine Learning models. A Facebook webscraper is included to scrape statuses of your Facebook friends to create a personality prediction for each of them. A Web App, Personality Analyzer, was created to interface with the predictions to compare your personality to your friends directly.
+This project aims to predict Big 5 personality traits from a sample of text using various Machine Learning models. A Facebook webscraper is included to scrape statuses of your Facebook friends to create a personality prediction for each of them. A Web App, Personality Analyzer, was created to interface with the predictions to compare your personality to your friends directly.
 
 ![Alt Text](static/My_Network.gif)
 
@@ -8,7 +8,7 @@ This project aims to predict personality traits from a sample of text using vari
 
 # Requirements 
 
-Python, MongoDB, Node.js, Selenium, PyMongo
+Python, MongoDB, PyMongo, Node.js/npm, Selenium, 
 
 ---
 
@@ -59,7 +59,7 @@ Bundle javascript:
 
 npm run build
 
-Creates the javascript bundle bundle.js
+Creates the javascript bundle.
 
 Run the web app:
 
@@ -75,11 +75,9 @@ Visit localhost:5000 to view the web app.
 
 ### Personality
 
-Personality is an important aspect of human life and is important for understanding yourself and other people. The preeminent personality model in personality psychology is the Big 5 model. The Big 5 model was derived through factor analysis of questions based on common descriptive adjectives. This analysis produced five distinct traits of personality:
+Personality is an important aspect of human life and is important for understanding yourself and other people. The preeminent personality model in personality psychology is the Big 5 model (https://en.wikipedia.org/wiki/Big_Five_personality_traits). The Big 5 model was derived through factor analysis of questions based on common descriptive adjectives. This analysis produced five distinct traits of personality:
 
-https://en.wikipedia.org/wiki/Big_Five_personality_traits
-
-#### Traits (O. C. E. A. N.)
+#### Big 5 Traits (O. C. E. A. N.)
 ##### (O) Openness to experience:
 (inventive/curious vs. consistent/cautious)
 
@@ -114,3 +112,23 @@ The models used are a Random Forest Regressor and a Random Forest Classifier. Th
 ### Web App
 
 The Web App was created using React.js using the Material-UI frontend library and Webpack for bundling. The backend is using Flask and MongoDB.
+
+There are three sections of the Web App:
+
+#### Text Predictor
+
+The Text Predictor tab allows you to input any text and create a corresponding personality prediction.
+
+![Alt Text](static/Text_Predictor.gif)
+
+#### My Personality
+
+The My Personality tab allows you take a 50 question Big 5 personality test (Goldberg, Lewis R. "The development of markers for the Big-Five factor structure." Psychological assessment 4.1 (1992): 26. <http://dx.doi.org/10.1037/1040-3590.4.1.26>) which then displays your corresponding personality radar graph and percentile scores.
+
+![Alt Text](static/My_Personality.gif)
+
+#### My Network
+
+The My Network tab lists out the personality predictions for the scraped statuses for each of your friends in your Facebook network. A compare function allows you to compare your personality score taken from the My Personality tab and the personality prediction created from the models. An overlay of the compared personality radar plots is created for visual representation of personality differences.
+
+![Alt Text](static/My_Network.gif)
