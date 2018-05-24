@@ -2,13 +2,13 @@
 
 This project aims to predict personality traits from a sample of text using various Machine Learning models. A Facebook webscraper is included to scrape statuses of your Facebook friends to create a personality prediction for each of them. A Web App, Personality Analyzer, was created to interface with the predictions to compare your personality to your friends directly.
 
-![Alt Text](static/My Network.gif)
+![Alt Text](static/My_Network.gif)
 
 ---
 
 # Requirements 
 
-Python, MongoDB, Node.js
+Python, MongoDB, Node.js, Selenium, PyMongo
 
 ---
 

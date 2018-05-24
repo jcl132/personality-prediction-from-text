@@ -247,7 +247,7 @@ if __name__ == '__main__':
         my_email=my_email,
         my_password=my_password,
         my_profile_url=my_profile_url,
-        browser='Chrome'
+        browser='Firefox'
     )
 
     FBWS.open_fb()
