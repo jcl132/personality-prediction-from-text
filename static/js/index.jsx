@@ -15,8 +15,6 @@ import MyNetwork from './my_network'
 import MyPersonality from './my_personality'
 
 class App extends React.Component {
-  // static propTypes = {
-  // };
 
   constructor(props, context) {
     super(props, context);
@@ -109,29 +107,29 @@ class App extends React.Component {
     }
 
     return(
-      <MuiThemeProvider>
         <div style={container_style}>
-          <AppBar
-            title="Personality Analyzer"/>
-          <div>
-            <Tabs>
-              <Tab label="My Network">
-                <MyNetwork 
-                  my_network={this.state.my_network} 
-                  my_personality_data={this.state.my_personality_data} 
-                  requestCompare={this.requestCompare}
-                  compare_data={this.state.compare_data}/>
-              </Tab>
-              <Tab label="My Personality">
-                <MyPersonality my_personality_data={this.state.my_personality_data}/>
-              </Tab>
-              <Tab label="Text Predictor" >
-                <TextPredictor />
-              </Tab>
-            </Tabs>
-          </div>
+          <MuiThemeProvider>
+            <AppBar
+              title="Personality Analyzer"/>
+            <div>
+              <Tabs>
+                <Tab label="My Network">
+                  <MyNetwork 
+                    my_network={this.state.my_network} 
+                    my_personality_data={this.state.my_personality_data} 
+                    requestCompare={this.requestCompare}
+                    compare_data={this.state.compare_data}/>
+                </Tab>
+                <Tab label="My Personality">
+                  <MyPersonality my_personality_data={this.state.my_personality_data}/>
+                </Tab>
+                <Tab label="Text Predictor" >
+                  <TextPredictor />
+                </Tab>
+              </Tabs>
+            </div>
+          </MuiThemeProvider>
         </div>
-      </MuiThemeProvider>
     )
   }
 }

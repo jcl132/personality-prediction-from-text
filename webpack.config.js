@@ -5,10 +5,6 @@ const config = {
         path: __dirname + '/static/dist',
         filename: 'bundle.js',
     },
-    devServer: {
-        contentBase: "./static",
-        hot: true
-    },
     module: {
       rules: [
         {
@@ -24,6 +20,7 @@ const config = {
       ]
     },
     resolve: {
+        modules: [__dirname + "/node_modules"],
         extensions: ['.js', '.jsx', '.css']
     },
 };
