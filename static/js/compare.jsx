@@ -204,7 +204,7 @@ export default class Compare extends React.Component {
 					      <TableRow>
 						    <TableHeaderColumn style={{fontSize: 17}}>Traits</TableHeaderColumn>
 						    <TableHeaderColumn style={{fontSize: 17}}>Me</TableHeaderColumn>
-					        <TableHeaderColumn style={{fontSize: 17}}>{this.annonymizeNames(personB.name)}</TableHeaderColumn>
+					        <TableHeaderColumn style={{fontSize: 17}}>{personB.name}</TableHeaderColumn>
 					        
 					        <TableHeaderColumn style={{fontSize: 17}}>Difference</TableHeaderColumn>
 					      </TableRow>
@@ -214,7 +214,7 @@ export default class Compare extends React.Component {
 					<div style={element_style}>
 						<img style={plot_img_style} src={'/static/'+personB.compare_radar_plot_url}>
 						</img>
-						<h5>Me vs. {this.annonymizeNames(personB.name)}</h5>
+						<h5>Me vs. {personB.name}</h5>
 					</div>
 					<div style={table_style}>
 						<Tabs>

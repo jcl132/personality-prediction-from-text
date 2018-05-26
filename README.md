@@ -8,13 +8,11 @@ This project aims to predict Big 5 personality traits from a sample of text usin
 
 # Requirements 
 
-Python, MongoDB, PyMongo, Node.js/npm, Selenium, 
+Python, MongoDB, PyMongo, Node.js/npm, Selenium
 
 ---
 
 # Installation and Usage
-
-## ALERT: Currently debugging installation and usage on different environments, thank you for your patience
 
 ## Webscrape Facebook
 
