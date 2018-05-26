@@ -9,7 +9,6 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 import has from 'lodash';
-import $ from 'jquery';
 import 'whatwg-fetch'
 
 import { hot } from 'react-hot-loader'
