@@ -382,7 +382,7 @@ export default class PersonCard extends React.Component {
 				    				<Avatar style={avatar_style} size={150} src={person.profile_pic_url}/>
 				    			</a>
 				    			<a href={person.url} target="_blank">
-				    				<span style={name_style}>{this.annonymizeNames(person.name)}</span>
+				    				<span style={name_style}>{person.name}</span>
 				    			</a>
 				    			{compare_element}
 				    		</div>
