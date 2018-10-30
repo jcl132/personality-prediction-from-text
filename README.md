@@ -2,6 +2,8 @@
 
 This project aims to predict Big 5 personality traits from a sample of text using various Machine Learning models. A Facebook webscraper is included to scrape statuses of your Facebook friends to create a personality prediction for each of them. A Web App, Personality Analyzer, was created to interface with the predictions to compare your personality to your friends directly.
 
+Youtube Introduction:
+
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=hwoJfmypQKg
 " target="_blank"><img src="http://img.youtube.com/vi/hwoJfmypQKg/0.jpg"
 alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
